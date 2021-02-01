@@ -4,7 +4,7 @@ import gzip
 import subprocess
 import os
 
-mysqldump_path = os.environ.get("MYSQLDUMP_PATH") else "/usr/bin/mysqldump"
+mysqldump_path = os.environ.get("MYSQLDUMP_PATH") if os.environ.get("MYSQLDUMP_PATH") else "/usr/bin/mysqldump"
 
 backup_prefix = pathlib.Path(os.environ["ODIR"])
 backup_dbs = os.environ["DBS"].split(",")
