@@ -2,11 +2,12 @@ import pathlib
 import datetime
 import gzip
 import subprocess
+import os
 
 mysqldump_path = "/usr/bin/mysqldump"
 
-backup_prefix = pathlib.Path(".")
-backup_dbs = [ "emotes", "inventorize" ]
+backup_prefix = pathlib.Path(os.environ["ODIR"])
+backup_dbs = os.environ["DBS"].split(",")
 
 
 def backup(backup_db):
