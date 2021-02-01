@@ -81,7 +81,7 @@ in with lib; {
           User = mcfg.user;
           ExecStart = let
             python = pkgs.python3;
-            backup_script = builtins.fetchGit "git://github.com/cdknight/mymysqlbackup" + "/backup.py";
+            backup_script = ./backup.py;
           in
             "${python.interpreter} ${backup_script}";
         };
