@@ -36,13 +36,11 @@ in with lib; {
 
   config = mkIf (mcfg.enable) {
 
-    mkIf (mcfg.user != config.services.mysql.user) {
-      users.users.${mcfg.user} =  {
-        isSystemUser = true;
-        createHome = false;
-        home = mcfg.dir;
-        group = "nogroup";
-      };
+    users.users.${mcfg.user} = mkIf (mcfg.user != config.services.mysql.user) {
+      isSystemUser = true;
+      createHome = false;
+      home = mcfg.dir;
+      group = "nogroup";
     };
 
     services.mysql.ensureUsers = [{
