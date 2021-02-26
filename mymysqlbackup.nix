@@ -35,6 +35,7 @@ in with lib; {
   };
 
   config = mkIf (mcfg.enable) {
+
     mkIf (mcfg.user != config.services.mysql.user) {
       users.users.${mcfg.user} =  {
         isSystemUser = true;
@@ -42,7 +43,7 @@ in with lib; {
         home = mcfg.dir;
         group = "nogroup";
       };
-    }
+    };
 
     services.mysql.ensureUsers = [{
       name = mcfg.user;
