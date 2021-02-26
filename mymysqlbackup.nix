@@ -64,6 +64,10 @@ in with lib; {
         };
       };
 
+      tmpfiles.rules = [
+        "d ${mcfg.dir} 0750 ${mcfg.user} ${config.services.mysql.group} - -"
+      ];
+
       services.mymysqlbackup = {
         description = "Service to back up mysql DBs for restoration if NixOS gets rebuilt";
         enable = true;
@@ -77,10 +81,6 @@ in with lib; {
         unitConfig = {
           DefaultDependencies = "no";
         };
-        preStart = ''
-          mkdir -p ${mcfg.dir}
-          chown -R ${mcfg.user}:${config.services.mysql.group} ${mcfg.dir}
-        '';
         serviceConfig = {
           Type = "oneshot";
           User = mcfg.user;
