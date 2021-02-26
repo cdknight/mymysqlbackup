@@ -34,7 +34,7 @@ in with lib; {
     };
   };
 
-  config = mkIf mcfg.enable {
+  config = mkIf (mcfg.enable && mcfg.user != config.services.mysql.user) {
     users.users.${mcfg.user} =  {
       isSystemUser = true;
       createHome = false;
