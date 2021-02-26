@@ -18,7 +18,7 @@ in with lib; {
 
       user = mkOption {
       type = types.str;
-        default = "mysqlbackup";
+        default = services.mysql.user;
         description = "User to run service as ";
       };
 
@@ -76,6 +76,10 @@ in with lib; {
         unitConfig = {
           DefaultDependencies = "no";
         };
+        preStart = ''
+          mkdir -p ${mcfg.dir}
+          chown -R ${mcfg.user}:${services.mysql.group} ${mcfg.dir}
+        '';
         serviceConfig = {
           Type = "oneshot";
           User = mcfg.user;
