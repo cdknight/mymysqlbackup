@@ -79,6 +79,7 @@ in with lib; {
           MYSQLDUMP_PATH = "${mysql}/bin/mysqldump";
         };
         unitConfig = {
+          RequiresMountsFor = mcfg.dir
           DefaultDependencies = "no";
         };
         serviceConfig = {
