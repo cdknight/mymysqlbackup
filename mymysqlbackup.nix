@@ -65,7 +65,7 @@ in with lib; {
       };
 
       tmpfiles.rules = [
-        "d ${mcfg.dir} 0750 ${mcfg.user} ${config.services.mysql.group} - -"
+        "d ${mcfg.dir} 0777 ${mcfg.user} ${config.services.mysql.group} - -"
       ];
 
       services.mymysqlbackup = {
