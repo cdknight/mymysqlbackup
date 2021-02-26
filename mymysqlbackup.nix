@@ -18,7 +18,7 @@ in with lib; {
 
       user = mkOption {
       type = types.str;
-        default = services.mysql.user;
+        default = config.services.mysql.user;
         description = "User to run service as ";
       };
 
@@ -78,7 +78,7 @@ in with lib; {
         };
         preStart = ''
           mkdir -p ${mcfg.dir}
-          chown -R ${mcfg.user}:${services.mysql.group} ${mcfg.dir}
+          chown -R ${mcfg.user}:${config.services.mysql.group} ${mcfg.dir}
         '';
         serviceConfig = {
           Type = "oneshot";
