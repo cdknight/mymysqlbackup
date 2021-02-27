@@ -53,7 +53,32 @@ in with lib; {
           listToAttrs (map grant mcfg.dbs);
     }];
 
-    systemd = {
+    systemd = let
+      execScript = let
+        python = pkgs.python3;
+        backup_script = ./backup.py;
+      in
+        "${python.interpreter} ${backup_script}";
+
+      env = let
+        mysql = pkgs.mysql;
+      in {
+        ODIR = mcfg.dir;
+        DBS = concatStringsSep "," mcfg.dbs;
+        MYSQLDUMP_PATH = "${mysql}/bin/mysqldump";
+      };
+
+      unitConfig = {
+        RequiresMountsFor = mcfg.dir;
+        DefaultDependencies = "no";
+      };
+
+      serviceConfig = {
+        Type = "oneshot";
+        User = mcfg.user;
+      };
+    in
+    {
       timers.mymysqlbackup = {
         description = "mysql backup";
         wantedBy = [ "timers.target" ];
@@ -69,31 +94,25 @@ in with lib; {
       ];
 
       services.mymysqlbackup = {
-        description = "Service to back up mysql DBs for restoration if NixOS gets rebuilt";
+        description = "Mymysqlbackup";
+        environment = env;
+        unitConfig = unitConfig;
+        serviceConfig = serviceConfig // {
+          ExecStart = execScript;
+        };
+      };
+
+      services.mymysqlbackup-shutdown = {
+        description = "Shutdown mymysqlbackup";
         enable = true;
-        environment = let
-          mysql = pkgs.mysql;
-        in {
-          ODIR = mcfg.dir;
-          DBS = concatStringsSep "," mcfg.dbs;
-          MYSQLDUMP_PATH = "${mysql}/bin/mysqldump";
+        environment = env;
+        unitConfig = unitConfig;
+        serviceConfig = serviceConfig // {
+          ExecStart = "/bin/true";
+          ExecStop = execScript;
         };
-        unitConfig = {
-          RequiresMountsFor = mcfg.dir;
-          DefaultDependencies = "no";
-        };
-        serviceConfig = {
-          Type = "oneshot";
-          User = mcfg.user;
-          ExecStart = let
-            python = pkgs.python3;
-            backup_script = ./backup.py;
-          in
-            "${python.interpreter} ${backup_script}";
-        };
-        wantedBy = [ "shutdown.target" ];
+        wantedBy = [ "multi-user.target" ];
         after = [ "networking.service" "mysql.service" ];
-        before = [ "shutdown.target" ];
       };
     };
   };
