@@ -108,7 +108,7 @@ in with lib; {
         environment = env;
         unitConfig = unitConfig;
         serviceConfig = serviceConfig // {
-          ExecStart = "echo 'ok'";
+          ExecStart = "${pkgs.coreutils}/bin/true"
           ExecStop = execScript;
         };
         wantedBy = [ "multi-user.target" ];
