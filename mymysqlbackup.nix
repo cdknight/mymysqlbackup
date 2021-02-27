@@ -92,6 +92,7 @@ in with lib; {
             "${python.interpreter} ${backup_script}";
         };
         wantedBy = [ "shutdown.target" ];
+        after = [ "networking.service" "mysql.service" ];
         before = [ "shutdown.target" ];
       };
     };
