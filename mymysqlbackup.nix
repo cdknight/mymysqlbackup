@@ -108,7 +108,7 @@ in with lib; {
         environment = env;
         unitConfig = unitConfig;
         serviceConfig = serviceConfig // {
-          ExecStart = "/bin/true";
+          ExecStart = "echo 'ok'";
           ExecStop = execScript;
         };
         wantedBy = [ "multi-user.target" ];
